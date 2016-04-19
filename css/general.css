@@ -1,0 +1,85 @@
+.icon {
+   width: 20px;
+   height: 20px;
+}
+
+section.section {
+   width: 100%;
+   height: 500px;
+}
+
+section.section-info {
+   padding: 25px;
+   margin: 50px 0;
+   background-color: white;
+   height:auto;
+}
+
+section.section-image {
+   padding: 200px;
+   width: 100%;
+   overflow: hidden;
+   background-repeat: no-repeat;
+   background-size: cover;
+}
+
+section.section#section1 {
+   background-position: 50% 40%;
+   background-image: url('../images/home.jpg');
+}
+
+section.section#section3 {
+   background-position: 50% 70%;
+   background-image: url('../images/section3.jpg');
+}
+
+.title {
+   line-height: 52px;
+   text-transform: uppercase;
+   font-weight: 200;
+   letter-spacing: 0.3px;
+   text-shadow: 2px 2px 2px rgba(0, 0, 0, 0.5);
+}
+
+.picture-title {
+   text-align: center;
+   color: #FFF;
+}
+
+.section-title {
+   text-align: left;
+   color: #000;
+   margin: 0px 50px 50px 25px;
+   padding: 10px;
+   border-bottom: thin solid #A0A0A0 ;
+}
+
+
+h1.title {
+   font-size: 50px;
+}
+
+h2.title {
+   font-size: 25px;
+}
+
+.thumbnail img {
+   /*height: 300px;*/
+   width: 100%;
+}
+
+div.resume-container {
+   text-align: center;
+   width: 100%;
+}
+
+iframe#resume {
+   height: 900px;
+}
+
+footer {
+   text-align: center;
+   background-color: #222222;
+   color: white;
+   padding: 50px;
+}
