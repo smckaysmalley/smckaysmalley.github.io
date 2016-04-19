@@ -1,0 +1,21 @@
+
+.resort-image {
+    overflow: hidden;
+    height: 300px;
+    width: 100%;
+    background-size: 100%;
+    background-repeat: no-repeat;
+}
+.small {
+    font-size: smaller !important;
+    margin-top: -10px;
+}
+
+
+
+#submit-message {
+   display: none;
+   position: fixed;
+   top: 50px;
+   text-align: center;
+}
