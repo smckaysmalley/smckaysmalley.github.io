@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>McKay Smalley</title>
+    <meta name="author" content="McKay Smalley">
+    <link rel="shortcut icon" href="../images/icon.png">
+    <link rel="stylesheet" href="../css/yeti.css" type="text/css" />
+    <link rel="stylesheet" href="../css/general.css" type="text/css" />
+    <link href="../css/survey.css" type="text/css" rel="stylesheet">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+</head>
+
+<body>
+
+    <!-- NAVBAR -->
+    <nav class="navbar navbar-default navbar-fixed-top">
+        <div class="container-fluid">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand" href="/#section1">
+                    <img alt="Home" src="../images/icon-white.png" class="icon" />
+                </a>
+            </div>
+
+            <!-- Collect the nav links, forms, and other content for toggling -->
+            <div class="collapse navbar-collapse">
+                <ul class="nav navbar-nav navbar-left">
+                    <li><a href="/#section2">Projects</a></li>
+                    <li role="presentation" class="dropdown">
+                        <a class="dropdown-toggle" data-toggle="dropdown" href="#classes" role="button" aria-expanded="false">Classes <b class="caret"></b></a>
+                        <ul class="dropdown-menu" role="menu">
+                            <li><a href="https://gitcoupled-puremagic.rhcloud.com/" target="_blank">Web Engineering II</a></li>
+                            <li><a href="https://onedrive.live.com/redir?resid=2FBC18EAF6E2F93E!14337&authkey=!AG2hhbHHOvGHO_c&ithint=folder%2c">Database Design and Development</a></li>
+                            <li><a href="/cs460">Computer Networking</a></li>
+                        </ul>
+                    </li>
+                    <li><a href="/#section4">Resume</a></li>
+                </ul>
+                <ul class="nav navbar-nav navbar-right">
+                    <li>
+                        <a class="navbar-brand" href="https://www.linkedin.com/in/smckaysmalley" target="_blank">
+                            <img class="icon" src="../images/linked-in.png">
+                        </a>
+                    </li>
+                    <li><a href="mailto:mckay.smalley@outlook.com">Contact</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <main class="container">
+
+        <div class="jumbotron">
+            <h1>Python Chat Application</h1>
+            <p>This is a chat server an client console application created for my final projecct</p>
+        </div>
+
+        <h1 class="title">Server.py</h1>
+        <a href="server.py" download>download</a>
+        <pre>
+#############################################################################
+# Program:
+#    Lab FinalProj, Computer Communication and Networking
+#    Brother Jones, CS 460
+# Author:
+#    McKay Smalley
+# Summary:
+#    This is a chat server, that keeps track of the connections. When a 
+#    message is recieved, it is transmitted to all the connected clients.
+#############################################################################
+import sys
+from socket import *
+import select
+
+DEFAULT_PORT = 6789
+SOCKET_LIST = []
+RECV_BUFFER = 4096
+
+# broadcast chat messages to all connected clients
+def broadcast( server_socket, sock, message ):
+   for socket in SOCKET_LIST:
+      # send the message only to peer
+      if socket != server_socket :
+         try :
+            socket.send(message)
+         except :
+            # broken socket connection
+            socket.close()
+            # broken socket, remove it
+            if socket in SOCKET_LIST:
+               SOCKET_LIST.remove(socket)
+
+def main():
+   serverPort = int( sys.argv[1] ) if len( sys.argv ) == 2 else DEFAULT_PORT
+
+   try:
+      server_socket = socket( AF_INET, SOCK_STREAM )
+      server_socket.setsockopt( SOL_SOCKET, SO_REUSEADDR, 1 )   
+      server_socket.bind( ( '', serverPort ) )
+      server_socket.listen( 10 ) 
+
+      SOCKET_LIST.append( server_socket )
+
+      localhost = gethostbyname( gethostname() )
+      print 'Serving at', localhost, 'on port', serverPort
+
+
+      while True:
+
+         ready_to_read,ready_to_write,in_error = select.select(SOCKET_LIST,[],[],0)
+      
+         for sock in ready_to_read:
+            # a new connection request recieved
+            if sock == server_socket: 
+               sockfd, addr = server_socket.accept()
+               SOCKET_LIST.append(sockfd)
+               print "New Connection @ [%s:%s]" % sockfd.getpeername()
+             
+            # a message from a client
+            else:
+
+               try:
+                  message = sock.recv(RECV_BUFFER)
+                  sys.stdout.write( message )
+                  if message:
+                     message = "\r" + message
+                     broadcast( server_socket, sock, message )  
+                  else:
+                     if sock in SOCKET_LIST:
+                        SOCKET_LIST.remove(sock)
+
+                        print "[%s:%s] is offline\n" % addr
+
+               except:
+                  print "[%s:%s] is offline\n" % addr
+                  continue
+
+      server_socket.close()
+
+   except KeyboardInterrupt:
+      server_socket.close()
+
+   except Exception, e:
+      print e
+
+if __name__ == "__main__":
+   main()
+        </pre>
+
+        <h1 class="title">Client.py</h1>
+        <a href="client.py" download>download</a>
+        <pre>
+#############################################################################
+# Program:
+#    Lab FinalProj, Computer Communication and Networking
+#    Brother Jones, CS 460
+# Author:
+#    McKay Smalley
+# Summary:
+#    This is a chat client that sends text messages to a server. The 
+#    was done using the curses library.
+#############################################################################
+import curses
+import sys
+import select
+import socket
+import time
+import thread
+
+DEFAULT_HOST = 'aus213l27'
+DEFAULT_PORT = 6789
+SLEEP_DELAY  = 0.05
+
+class Client:
+
+   def __init__( self ):
+      # socket setup
+      self.s    = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+      host      = sys.argv[1] if len( sys.argv ) >= 2 else DEFAULT_HOST
+      port      = int( sys.argv[2] ) if len( sys.argv ) >= 3 else DEFAULT_PORT
+
+
+      # connect to server
+      try :
+         self.s.connect( ( host, port ) )
+      except :
+         print 'Unable to connect', host, port
+         sys.exit()
+
+      # UI setup
+      self.username   = raw_input( "Enter a username: " )
+
+      self.s.send( "[" + self.username + "] joined the chat room. \n" )
+
+      self.screen     = curses.initscr()
+      self.win_height = self.screen.getmaxyx()[0]
+      self.win_width  = self.screen.getmaxyx()[1]
+      self.input_line = curses.newwin( 1, self.win_width, 0, 0 )
+      self.chat_win   = curses.newwin( self.win_height, self.win_width, 1, 0)
+      self.dialogue   = []
+
+      curses.curs_set( 0 )
+
+   def run( self ):
+      try:
+         thread.start_new_thread( self.listen_for_messages, ( ) )
+         self.get_user_input()
+         
+      except KeyboardInterrupt:
+         self.s.send( "[" + self.username + "] left the chat room. \n" )
+         self.s.close()
+         curses.endwin()
+
+   def get_user_input( self ):
+      while True:
+         self.input_line.addstr( 0, 0, "> " )
+         self.input_line.refresh()
+         text = self.input_line.getstr( 0, 2, 64 )
+         message = '[' + self.username + '] ' + text + '\n'
+         self.s.send( message )
+
+         # sleep, so that the redrawing does not interupt other thread
+         time.sleep(SLEEP_DELAY) 
+         
+         self.input_line.clear()
+
+   def listen_for_messages( self ):
+      time.sleep(SLEEP_DELAY)
+      while True:
+         try:
+
+            message = self.s.recv( 4096 )
+
+            if len( self.dialogue )+1 >= self.win_height:
+               self.dialogue.pop()
+
+            self.dialogue.insert( 0, message )
+            self.chat_win.clear()
+
+            for i, text in enumerate( self.dialogue ):
+               self.chat_win.addstr( i, 0, text )
+            
+            self.chat_win.refresh()
+
+         except Exception, e:
+            "DO NOTHING"
+            # curses.endwin()
+            print e
+            # time.sleep(2)
+            # self.dialogue.pop()
+
+if __name__ == "__main__":
+   sys.exit( Client().run() )
+        </pre>
+
+    </main>
+
+    <footer>
+        Copyright &copy McKay Smalley 2016
+    </footer>
+
+
+    <script type="text/javascript" src="../js/bootstrap.min.js"></script>
+
+</body>
+
+</html>
