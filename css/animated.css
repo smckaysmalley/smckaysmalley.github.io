@@ -15,10 +15,10 @@ body { /* Addresses a small issue in webkit: http://bit.ly/NEdoDq */
    -webkit-backface-visibility: hidden;
 }
 .animated {
-   -webkit-animation-duration: 0.7s;
-      -moz-animation-duration: 0.7s;
-        -o-animation-duration: 0.7s;
-           animation-duration: 0.7s;
+   -webkit-animation-duration: 1.4s;
+      -moz-animation-duration: 1.4s;
+        -o-animation-duration: 1.4s;
+           animation-duration: 1.4s;
    -webkit-animation-fill-mode: both;
       -moz-animation-fill-mode: both;
         -o-animation-fill-mode: both;
@@ -739,6 +739,11 @@ body { /* Addresses a small issue in webkit: http://bit.ly/NEdoDq */
       -webkit-transform: translateY(-20px);
    }
 
+   50% {
+      opacity: 0;
+      -webkit-transform: translateY(-20px);
+   }
+
    100% {
       opacity: 1;
       -webkit-transform: translateY(0);
@@ -750,6 +755,11 @@ body { /* Addresses a small issue in webkit: http://bit.ly/NEdoDq */
       opacity: 0;
       -moz-transform: translateY(-20px);
    }
+  
+  50% {
+        opacity: 0;
+        -moz-transform: translateY(-20px);
+     }
 
    100% {
       opacity: 1;
@@ -762,6 +772,11 @@ body { /* Addresses a small issue in webkit: http://bit.ly/NEdoDq */
       opacity: 0;
       -o-transform: translateY(-20px);
    }
+  
+  50% {
+        opacity: 0;
+        -o-transform: translateY(-20px);
+     }
 
    100% {
       opacity: 1;
@@ -771,6 +786,11 @@ body { /* Addresses a small issue in webkit: http://bit.ly/NEdoDq */
 
 @keyframes fadeInDown {
    0% {
+      opacity: 0;
+      transform: translateY(-20px);
+   }
+
+   50% {
       opacity: 0;
       transform: translateY(-20px);
    }
