@@ -11,7 +11,12 @@
     margin-top: -10px;
 }
 
-
+.survey-gradient {
+  background: -webkit-linear-gradient(right, #f9937a, #f9f97a, #98f97a); /* For Safari 5.1 to 6.0 */
+  background: -o-linear-gradient(right, #f9937a, #f9f97a, #98f97a); /* For Opera 11.1 to 12.0 */
+  background: -moz-linear-gradient(right, #f9937a, #f9f97a, #98f97a); /* For Firefox 3.6 to 15 */
+  background: linear-gradient(to right, #f9937a, #f9f97a, #98f97a); /* Standard syntax */
+}
 
 #submit-message {
    display: none;
