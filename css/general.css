@@ -64,17 +64,7 @@ h2.title {
 }
 
 .thumbnail img {
-   /*height: 300px;*/
    width: 100%;
-}
-
-div.resume-container {
-   text-align: center;
-   width: 100%;
-}
-
-iframe#resume {
-   height: 900px;
 }
 
 footer {
@@ -82,4 +72,11 @@ footer {
    background-color: #222222;
    color: white;
    padding: 50px;
+}
+
+.resume-container {
+    margin: auto;
+    height: 100vh;
+    /*width: 60vw;*/
+    overflow:hidden;
 }
