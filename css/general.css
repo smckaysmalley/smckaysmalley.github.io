@@ -76,7 +76,7 @@ footer {
 
 .resume-container {
     margin: auto;
-    height: 100vh;
-    /*width: 60vw;*/
+    height: 130vh;
+    width: 60vw;
     overflow:hidden;
 }
